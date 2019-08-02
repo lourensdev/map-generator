@@ -1,14 +1,18 @@
 import React from 'react';
-import Tile, { TileType } from './components/tile';
+import './App.scss';
+import Board from './components/board';
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <Tile type={TileType.dirt} />
-      <Tile type={TileType.grass} />
-      <Tile type={TileType.grass} />
-    </div>
-  );
+const boardSize: number[] = [10,10];
+
+class App extends React.Component<{}, {}> {
+  render(){
+    return (
+      <div className="b-app">
+        <Board size={boardSize} />
+        <button className="e-btn" onClick={() => this.forceUpdate()}>Regenerate</button>
+      </div>
+    );
+  }
 }
 
 export default App;

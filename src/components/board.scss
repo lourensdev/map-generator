@@ -1,0 +1,18 @@
+.b-board {
+    margin: 30px;
+    .e-board-row {
+        display: flex;
+
+        &:nth-child(odd) {
+            margin-left: 32px;
+        }
+
+        &:not(:first-child) {
+            margin-top: -14px;
+        }
+    }
+
+    .e-board-col {
+        padding-right: 4px;
+    }
+}
