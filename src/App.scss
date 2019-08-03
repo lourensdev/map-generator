@@ -27,3 +27,20 @@
         }
     }
 }
+
+.b-grid {
+    .e-row {
+        display: flex;
+    }
+    .e-cell {
+        display: inline-block;
+        border: 1px solid #313131;
+        width: 20px;
+        height: 20px;
+        background-color: #119e4d;
+
+        &.m-active {
+            background-color: #06c3ff;
+        }
+    }
+}

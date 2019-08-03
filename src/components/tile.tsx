@@ -2,6 +2,8 @@ import React from 'react';
 
 import './tile.scss';
 
+import water from '../images/water.png';
+
 import dirt1 from '../images/dirt-1.png';
 import dirt2 from '../images/dirt-2.png';
 import dirt3 from '../images/dirt-3.png';
@@ -47,6 +49,7 @@ const grassTiles: string[] = [
 ];
 
 export enum TileType {
+    water = "water",
     dirt = "dirt",
     grass = "grass"
 }
@@ -59,6 +62,9 @@ interface ITileProps {
 const Tile: React.FC<ITileProps> = (props) => {
     let tileArr: string[] = dirtTiles;
     switch(props.type) {
+        case TileType.water:
+            tileArr = [water];
+            break;
         case TileType.dirt:
             tileArr = dirtTiles;
             break;
