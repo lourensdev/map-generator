@@ -7,3 +7,7 @@ it('renders without crashing', () => {
   ReactDOM.render(<App />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
+
+/**
+ * No Tests have been written for this app
+ */
