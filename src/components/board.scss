@@ -4,15 +4,11 @@
         display: flex;
 
         &:nth-child(odd) {
-            margin-left: 32px;
+            margin-left: 15px;
         }
 
         &:not(:first-child) {
-            margin-top: -14px;
+            margin-top: -9px;
         }
-    }
-
-    .e-board-col {
-        padding-right: 4px;
     }
 }

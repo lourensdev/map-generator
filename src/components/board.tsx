@@ -1,6 +1,6 @@
 import React from 'react';
 import './board.scss';
-import Tile, { TileType } from './tile';
+import Tile from './tile';
 
 interface IBoardProps {
     data: number[][];
@@ -31,19 +31,12 @@ class Board extends React.Component<IBoardProps, {}> {
         );
     }
     
-    renderGridCell(index: number, type: number = 0){
-        let tile: any;
-        switch(type) {
-            case 0: 
-                tile = <Tile type={TileType.grass} />;
-                break;
-            case 1: 
-                tile = <Tile type={TileType.water} />;
-                break;
-        }
+    renderGridCell(index: number, property: number = 0){
         return (
             <div key={index} className="e-board-col">
-                { tile }
+                { 
+                    property === 1 ? <Tile water={true} /> : <Tile property={property} />
+                }
             </div>
         );
     }
