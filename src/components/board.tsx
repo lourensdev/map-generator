@@ -34,9 +34,7 @@ class Board extends React.Component<IBoardProps, {}> {
     renderGridCell(index: number, property: number = 0){
         return (
             <div key={index} className="e-board-col">
-                { 
-                    property === 1 ? <Tile water={true} /> : <Tile property={property} />
-                }
+                { property === 1 ? <Tile water={true} /> : <Tile property={property} /> }
             </div>
         );
     }

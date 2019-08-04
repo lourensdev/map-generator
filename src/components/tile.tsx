@@ -47,6 +47,7 @@ interface ITileProps {
 }
 
 const Tile: React.FC<ITileProps> = (props) => {
+    const decideWith: any = new Utilities();
     let tileArr: string[] = grassTiles;
     tileArr = props.water ? [water] : grassTiles;
 
@@ -54,10 +55,10 @@ const Tile: React.FC<ITileProps> = (props) => {
     if(props.property !== 0) {
         switch(props.property) {
             case TileProperty.trees:
-                tilePropIndex = new Utilities().RandomRange(1, 4);
+                tilePropIndex = decideWith.RandomRange(1, 4);
                 break;
             case TileProperty.rocks:
-                tilePropIndex = new Utilities().RandomRange(5, 8);
+                tilePropIndex = decideWith.RandomRange(5, 8);
                 break;
             case TileProperty.elevated:
                 tilePropIndex = tileArr.length - 1;

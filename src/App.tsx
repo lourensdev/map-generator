@@ -11,16 +11,33 @@ interface IAppState {
 class App extends React.Component<{}, IAppState> {
 
   private boardSize: number[] = [21,25];
-  private board: number[][] = [];
+  private decideWith: any = new Utilities();
 
   constructor(props: any){
     super(props);
     this.state = {
-      board: this.createBoardData(this.boardSize)
+      board: this.createBlankBoard(this.boardSize)
     }
   }
 
-  createBoardData(size: number[]){
+  updateBoard(grid: number[][]) {
+    this.setState({
+      board: grid
+    });
+  }
+
+  gridLoop(grid: number[][], callbackY: any, callbackX: any = null){
+    for (let x = 0; x < grid.length; x++) {
+      for (let y = 0; y < grid[x].length; y++) {
+        callbackY(x, y);
+      }
+      if(callbackX !== null) {
+        callbackX(x);
+      }
+    }
+  }
+
+  createBlankBoard(size: number[]){
     const baseType: number = 0;
     let rows: number[][] = [];
     for (let x = 0; x < size[0]; x++) {
@@ -33,59 +50,46 @@ class App extends React.Component<{}, IAppState> {
     return rows;
   }
 
-  addForestPass(grid: number[][]) {
-    for (let x = 0; x < grid.length; x++) {
-      for (let y = 0; y < grid[x].length; y++) {
-        if(grid[x][y] !== TileProperty.water) {
-          if(new Utilities().CoinFlip()) {
-            grid[x][y] = TileProperty.trees;
-          } else {
-            grid[x][y] = TileProperty.grass;
-          }
+  addForest(grid: number[][]) {
+    this.gridLoop(grid, (x: number, y: number) => {
+      if(grid[x][y] !== TileProperty.water) {
+        if(this.decideWith.CoinFlip()) {
+          grid[x][y] = TileProperty.trees;
+        } else {
+          grid[x][y] = TileProperty.grass;
         }
       }
-    }
-    this.setState({
-      board: grid
-    });
+    })
+    this.updateBoard(grid);
   }
 
-  addRocksPass(grid: number[][]) {
-    for (let x = 0; x < grid.length; x++) {
-      for (let y = 0; y < grid[x].length; y++) {
-        if(grid[x][y] !== TileProperty.water && grid[x][y] === TileProperty.trees) {
-          if(new Utilities().CoinFlip()) {
-            grid[x][y] = TileProperty.rocks;
-          }
+  addRocks(grid: number[][]) {
+    this.gridLoop(grid, (x: number, y: number) => {
+      if(grid[x][y] !== TileProperty.water && grid[x][y] === TileProperty.trees) {
+        if(this.decideWith.CoinFlip(1)) {
+          grid[x][y] = TileProperty.rocks;
         }
       }
-    }
-    this.setState({
-      board: grid
     });
+    this.updateBoard(grid);
   }
 
-  addElevationsPass(grid: number[][]) {
-    for (let x = 0; x < grid.length; x++) {
-      for (let y = 0; y < grid[x].length; y++) {
-        if(grid[x][y] !== TileProperty.water) {
-          if(new Utilities().CoinFlip(10)) {
-            grid[x][y] = TileProperty.elevated;
-          }
+  addElevations(grid: number[][]) {
+    this.gridLoop(grid, (x: number, y: number) => {
+      if(grid[x][y] !== TileProperty.water && grid[x][y] !== TileProperty.rocks && grid[x][y] !== TileProperty.trees) {
+        if(this.decideWith.CoinFlip(0.5)) {
+          grid[x][y] = TileProperty.elevated;
         }
       }
-    }
-    this.setState({
-      board: grid
     });
+    this.updateBoard(grid);
   }
 
-  addRiverPass(grid: number[][], width: number = 0, multiplier: number = 1) {
+  addRiver(grid: number[][], width: number = 0, multiplier: number = 1) {
     for (let z = 0; z < multiplier; z++) {
-      let randomStart: number = new Utilities().RandomRange(0, this.boardSize[0]);
-      for (let x = 0; x < grid.length; x++) {
-        for (let y = 0; y < grid[x].length; y++) {
-          if(y === randomStart) {
+      let randomIndex: number = this.decideWith.RandomRange(0, this.boardSize[0]);
+      this.gridLoop(grid, (x: number, y: number) => {
+          if(y === randomIndex) {
             if(y + width < grid[x].length) {
               for (let i = 0; i < width; i++) { 
                 grid[x][y + i] = TileProperty.water;
@@ -94,17 +98,15 @@ class App extends React.Component<{}, IAppState> {
               grid[x][y] = TileProperty.water;
             }
           }
-        }
-        if(x % 2 === 0) {
-          randomStart = new Utilities().RandomRange(randomStart, randomStart + 1);
-        } else {
-          randomStart = new Utilities().RandomRange(randomStart - 1, randomStart + 2);
-        }
-      }
+        }, (x: number) => {
+          if(x % 2 === 0) {
+            randomIndex = this.decideWith.RandomRange(randomIndex, randomIndex + 1);
+          } else {
+            randomIndex = this.decideWith.RandomRange(randomIndex - 1, randomIndex + 2);
+          }
+        });
     }
-    this.setState({
-      board: grid
-    });
+    this.updateBoard(grid);
   }
   
   render(){
@@ -112,10 +114,10 @@ class App extends React.Component<{}, IAppState> {
       <div className="b-app">
         <Board data={this.state.board} />
         <div>
-          <button className="e-btn" onClick={() => this.addForestPass(this.state.board)}>Add Forest</button>
-          <button className="e-btn" onClick={() => this.addRocksPass(this.state.board)}>Add Rocks</button>
-          <button className="e-btn" onClick={() => this.addElevationsPass(this.state.board)}>Add Elevations</button>
-          <button className="e-btn" onClick={() => this.addRiverPass(this.state.board, 3, 1)}>Add Water</button>
+          <button className="e-btn" onClick={() => this.addForest(this.state.board)}>Add Forest</button>
+          <button className="e-btn" onClick={() => this.addRocks(this.state.board)}>Add Rocks</button>
+          <button className="e-btn" onClick={() => this.addElevations(this.state.board)}>Add Elevations</button>
+          <button className="e-btn" onClick={() => this.addRiver(this.state.board, 3, 1)}>Add Water</button>
         </div>
       </div>
     );
